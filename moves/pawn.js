@@ -5,37 +5,33 @@ const {
 } = require('../utils')
 
 module.exports = function pawn(square, squares) {
-  const piece = squares[square]
-  if(piece[0] !== 'p') return []
+  // console.log('pawn')
+  const squarePiece = squares[square]
 
   const moves = []
 
   const { x, y } = getCoordinatesFromSquare(square)
-  const player = getPlayer(piece)
+  const player = getPlayer(squarePiece)
   let newSquare
 
-  if(player === 0) {
-    newSquare = getSquareFromCoordinates({ x, y: y + 1 })
-    // console.log(square, x, y + 1, newSquare, squares[newSquare])
-    if(squares[newSquare] !== '') return []
+  newSquare = getSquareFromCoordinates({
+    x,
+    y: (player === 0 ? y + 1 : y - 1)
+  })
+  // console.log(square, x, y + 1, newSquare, squares[newSquare])
+  if(squares[newSquare] !== '') return []
 
-    moves.push(newSquare)
-    console.log(moves)
+  moves.push(newSquare)
+  // console.log(moves)
 
-    if(y === 1) {
-      newSquare = getSquareFromCoordinates({ x, y: 3 })
-      if(squares[newSquare] === '') moves.push(newSquare)
-    }
-  } else {
-    newSquare = getSquareFromCoordinates({ x, y: y - 1 })
-    if(squares[newSquare] !== '') return []
-
-    moves.push(newSquare)
-
-    if(y === 6) {
-      newSquare = getSquareFromCoordinates({ x, y: 4 })
-      if(squares[newSquare] === '') moves.push(newSquare)
-    }
+  // first move case
+  newSquare = -1
+  if(player === 0 && y === 1) {
+    newSquare = getSquareFromCoordinates({ x, y: 3 })
+  } else if(player === 1 && y === 6) {
+    newSquare = getSquareFromCoordinates({ x, y: 4 })
   }
+  if(squares[newSquare] === '') moves.push(newSquare)
+
   return moves
 }

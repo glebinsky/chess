@@ -3,28 +3,38 @@ const {
   updateSquares,
 
   loggedMoves,
-  possibleMoves,
   squares,
-  getCoordinatesFromSquare,
-  getPlayer,
 } = require('./game')
 
+const {
+  getPlayer,
+  getCoordinatesFromSquare,
+} = require('./utils')
 
-updateMoves(1)
 updateSquares(1,18)
-updateMoves(57)
 updateSquares(57,40)
-updateMoves(6)
 updateSquares(6,23)
-updateMoves(62)
-updateSquares(62,possibleMoves[1])
-updateMoves(11)
-updateSquares(11,possibleMoves[1])
-updateMoves(51)
-updateSquares(51,possibleMoves[1])
+updateSquares(62,45)
+updateSquares(11,27)
+updateSquares(51,33)
 
 
-console.log(squares)
+for(let square = 0, output = ''; square < squares.length; square++) {
+  output += (squares[square] === '' ? '___' : squares[square]) + ','
+  switch(square) {
+    case 7:
+    case 15:
+    case 23:
+    case 31:
+    case 39:
+    case 47:
+    case 55:
+    case 63:
+      console.log(output)
+      output = ''
+  }
+}
+
 loggedMoves.forEach(m => {
   const {
     oldSquare,

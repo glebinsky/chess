@@ -5,8 +5,7 @@ const {
 } = require('../utils')
 
 module.exports = function knight(square, squares) {
-  if(squares[square][0] !== 'n') return []
-
+  // console.log('knight')
   const { x, y } = getCoordinatesFromSquare(square)
 
   const steps = [
