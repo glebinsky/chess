@@ -12,19 +12,47 @@ module.exports = function pawn(square, squares) {
 
   const { x, y } = getCoordinatesFromSquare(square)
   const player = getPlayer(squarePiece)
+  const yAdvanceOne = player === 0 ? y + 1 : y - 1
+
   let newSquare
 
+  // attack right
+  if(x < 7) {
+    newSquare = getSquareFromCoordinates({
+      x: x + 1,
+      y: yAdvanceOne
+    })
+    if(squares[newSquare] !== '' && getPlayer(squares[newSquare]) !== player)
+      moves.push(newSquare)
+    
+    //TODO: en passant
+  }
+
+  // attack left
+  if(x > 0) {
+    newSquare = getSquareFromCoordinates({
+      x: x - 1,
+      y: yAdvanceOne
+    })
+    if(squares[newSquare] !== '' && getPlayer(squares[newSquare]) !== player)
+      moves.push(newSquare)
+    
+    //TODO: en passant
+  }
+
+  // advance one
   newSquare = getSquareFromCoordinates({
     x,
-    y: (player === 0 ? y + 1 : y - 1)
+    y: yAdvanceOne
   })
   // console.log(square, x, y + 1, newSquare, squares[newSquare])
-  if(squares[newSquare] !== '') return []
+  if(squares[newSquare] !== '') return moves
 
   moves.push(newSquare)
   // console.log(moves)
 
-  // first move case
+
+  // advance two on first move
   newSquare = -1
   if(player === 0 && y === 1) {
     newSquare = getSquareFromCoordinates({ x, y: 3 })

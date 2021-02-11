@@ -4,6 +4,7 @@ const {
 
   loggedMoves,
   squares,
+  pieces,
 } = require('./game')
 
 const {
@@ -16,9 +17,20 @@ updateSquares(57,40)
 updateSquares(6,23)
 updateSquares(62,45)
 updateSquares(11,27)
-updateSquares(51,33)
+updateSquares(51,35)
+updateSquares(12,28)
 
 
+console.log()
+console.log('pieces')
+Object.entries(pieces).forEach(([player, playerPieces]) =>
+  Object.entries(playerPieces).forEach(([piece, data]) =>
+    console.log(player, piece, data)
+  )
+)
+
+console.log()
+console.log('squares')
 for(let square = 0, output = ''; square < squares.length; square++) {
   output += (squares[square] === '' ? '___' : squares[square]) + ','
   switch(square) {
@@ -35,6 +47,8 @@ for(let square = 0, output = ''; square < squares.length; square++) {
   }
 }
 
+console.log()
+console.log('moves')
 loggedMoves.forEach(m => {
   const {
     oldSquare,
