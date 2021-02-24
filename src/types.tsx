@@ -15,11 +15,9 @@ export interface PieceMeta {
   possibleMoves?: PossibleMoves,
 }
 
-export interface StateProps {
-  pieces: Pieces,
-  turn: Turn,
-  squares: Squares,
-  loggedMoves: object[],
-}
-
 export type PieceType = 'p' | 'n' | 'r' | 'b' | 'k' | 'q'
+
+export interface Coordinates {
+  x: number,
+  y: number,
+}

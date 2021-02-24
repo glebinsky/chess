@@ -2,32 +2,67 @@ import React from 'react';
 import { connect } from "react-redux"
 import { loadPieces } from './redux/action-pieces'
 import styles from './App.module.css';
-import BoardSquare from './Square'
+import BoardSquare from './BoardSquare'
 
-import { getPieceType } from './utils'
+import {
+  getPieceType,
+  getPiece,
+  isPieceTurn,
+} from './utils'
+
 import {
   knight,
   pawn,
 } from './moves'
 
 import {
-  StateProps,
   Pieces,
   PieceMeta,
   Squares,
   Square,
   Turn,
-  PossibleMoves,
 } from './types'
 
-function App(props: any) {
+interface StateProps {
+  pieces: Pieces,
+  turn: Turn,
+}
+
+interface AppProps {
+  pieces: Pieces,
+  squares: Squares,
+  turn: Turn,
+  loadPieces: Function,
+}
+
+function App(props: AppProps) {
+  const [selectedPiece, setSelectedPiece] = (React.useState() as [string, Function])
+
   const {
     pieces,
     squares,
+    turn,
     loadPieces,
   } = props
 
   if(!piecesLoaded(pieces)) loadPieces()
+
+  function selectPiece(squarePiece: string) {
+    setSelectedPiece()
+    if(!isPieceTurn(pieces, squarePiece, turn)) return
+    setSelectedPiece(squarePiece)
+  }
+
+  function isSquareSelected(squarePiece: string, index: number): boolean {
+    let selected = selectedPiece === squarePiece
+    if(!selected && selectedPiece) {
+      const pieceMeta = getPiece(selectedPiece, pieces)
+      selected = pieceMeta !== undefined &&
+        pieceMeta.possibleMoves !== undefined &&
+        pieceMeta.possibleMoves.includes(index)
+    }
+    return selected
+  }
 
   let color = true
 
@@ -38,11 +73,16 @@ function App(props: any) {
         color = !color
         if(i % 8 === 0) color = !color
 
+        const hover = isPieceTurn(pieces, s, turn)
+        const selected = isSquareSelected(s, i)
+
         return <BoardSquare
                 key={i}
-                number={i}
                 color={color}
-                piece={s} />
+                piece={s}
+                hover={hover}
+                selected={selected}
+                selectPiece={() => selectPiece(s)} />
       })}
       </div>
     </div>
@@ -52,6 +92,7 @@ function App(props: any) {
 function mapStateToProps(state: StateProps) {
   const {
     pieces,
+    turn,
   } = state
 
   let squares = (new Array(64)).fill('')
@@ -64,6 +105,7 @@ function mapStateToProps(state: StateProps) {
   return {
     pieces,
     squares,
+    turn,
   }
 }
 

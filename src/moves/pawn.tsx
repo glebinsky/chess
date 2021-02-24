@@ -20,7 +20,7 @@ export default function pawn(square: Square, squares: Squares): PossibleMoves {
   const player = getPlayer(squarePiece)
   const yAdvanceOne = player === 0 ? y + 1 : y - 1
 
-  let newSquare
+  let newSquare: Square
 
   // attack right
   if(x < 7) {

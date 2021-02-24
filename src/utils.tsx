@@ -1,16 +1,13 @@
 import {
   Pieces,
   PieceType,
+  PieceMeta,
   Turn,
   Square,
+  Coordinates,
 } from './types'
 
-interface Coordinates {
-  x: number,
-  y: number,
-}
-
-export function getPiece(squarePiece: string, pieces: Pieces): string | undefined {
+export function getPiece(squarePiece: string, pieces: Pieces): PieceMeta | undefined {
   if(squarePiece === '') return
   // @ts-ignore: Don't want to refactor player keys
   return pieces[getPlayer(squarePiece)][squarePiece.substring(1)]
@@ -24,6 +21,12 @@ export function getPieceType(squarePiece: string): PieceType | undefined {
 export function getPlayer(squarePiece: string): Turn | undefined {
   if(squarePiece === '') return
   return (Number.parseInt(squarePiece.substring(0,1), 10) as Turn)
+}
+
+export function isPieceTurn(pieces: Pieces, squarePiece: string, turn: Turn): boolean {
+  const piece: PieceMeta | undefined = getPiece(squarePiece, pieces)
+  const player: Turn | undefined = getPlayer(squarePiece)
+  return (player === turn && piece !== undefined)
 }
 
 export function getCoordinatesFromSquare(s: Square): Coordinates {
