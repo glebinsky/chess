@@ -21,3 +21,11 @@ export interface Coordinates {
   x: number,
   y: number,
 }
+
+export interface UpdatePiecesPayload {
+  newPlayer: number,
+  newPieceKey: string,
+  newIndex: Square,
+  oldPlayer?: number,
+  oldPieceKey?: string,
+}

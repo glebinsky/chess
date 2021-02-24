@@ -1,4 +1,13 @@
+import { UpdatePiecesPayload } from '../types'
+
+
 export const LOAD_PIECES = 'LOAD_PIECES'
+export const UPDATE_PIECES = 'UPDATE_PIECES'
+
+export const updatePieces = (payload: UpdatePiecesPayload) => ({
+  type: UPDATE_PIECES,
+  payload,
+})
 
 export const loadPieces = () => ({
   type: LOAD_PIECES,

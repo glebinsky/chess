@@ -7,10 +7,12 @@ import {
   Coordinates,
 } from './types'
 
+export const getPieceKey = (squarePiece: string): string => squarePiece.substring(1)
+
 export function getPiece(squarePiece: string, pieces: Pieces): PieceMeta | undefined {
   if(squarePiece === '') return
   // @ts-ignore: Don't want to refactor player keys
-  return pieces[getPlayer(squarePiece)][squarePiece.substring(1)]
+  return pieces[getPlayer(squarePiece)][getPieceKey(squarePiece)]
 }
 
 export function getPieceType(squarePiece: string): PieceType | undefined {

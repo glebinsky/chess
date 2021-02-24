@@ -1,6 +1,10 @@
 import React from 'react';
-import { connect } from "react-redux"
-import { loadPieces } from './redux/action-pieces'
+import { connect, batch } from "react-redux"
+import {
+  loadPieces,
+  updatePieces,
+} from './redux/action-pieces'
+import { updateTurn } from './redux/action-turn'
 import styles from './App.module.css';
 import BoardSquare from './BoardSquare'
 
@@ -8,6 +12,8 @@ import {
   getPieceType,
   getPiece,
   isPieceTurn,
+  getPlayer,
+  getPieceKey,
 } from './utils'
 
 import {
@@ -33,6 +39,8 @@ interface AppProps {
   squares: Squares,
   turn: Turn,
   loadPieces: Function,
+  updatePieces: Function,
+  updateTurn: Function,
 }
 
 function App(props: AppProps) {
@@ -43,25 +51,55 @@ function App(props: AppProps) {
     squares,
     turn,
     loadPieces,
+    updatePieces,
+    updateTurn,
   } = props
 
+  // get pieces from backend
   if(!piecesLoaded(pieces)) loadPieces()
 
-  function selectPiece(squarePiece: string) {
-    setSelectedPiece()
-    if(!isPieceTurn(pieces, squarePiece, turn)) return
+  function selectPiece(squarePiece: string, squareIndex: number) {
+    if(squarePiece === selectedPiece || (squarePiece !== '' && !isPieceTurn(pieces, squarePiece, turn))) {
+      setSelectedPiece()
+      return
+    }
+
+    if(selectedPiece) {
+      const pieceMeta = getPiece(selectedPiece, pieces)
+      if(squareInPossibleMoves(squareIndex)) {
+        batch(() => {
+          updatePieces({
+            newPlayer: getPlayer(selectedPiece),
+            newPieceKey: getPieceKey(selectedPiece),
+            newIndex: squareIndex,
+            oldPlayer: getPlayer(squares[squareIndex]),
+            oldPieceKey: getPieceKey(squares[squareIndex]),
+          })
+          updateTurn()
+        })
+
+        setSelectedPiece()
+        return
+      }
+    }
+
     setSelectedPiece(squarePiece)
   }
 
-  function isSquareSelected(squarePiece: string, index: number): boolean {
+  function isSquareSelected(squarePiece: string, squareIndex: number): boolean {
     let selected = selectedPiece === squarePiece
     if(!selected && selectedPiece) {
       const pieceMeta = getPiece(selectedPiece, pieces)
-      selected = pieceMeta !== undefined &&
-        pieceMeta.possibleMoves !== undefined &&
-        pieceMeta.possibleMoves.includes(index)
+      selected = squareInPossibleMoves(squareIndex)
     }
     return selected
+  }
+
+  function squareInPossibleMoves(squareIndex: number) {
+    const pieceMeta = getPiece(selectedPiece, pieces)
+    return pieceMeta !== undefined &&
+      pieceMeta.possibleMoves !== undefined &&
+      pieceMeta.possibleMoves.includes(squareIndex)
   }
 
   let color = true
@@ -82,7 +120,7 @@ function App(props: AppProps) {
                 piece={s}
                 hover={hover}
                 selected={selected}
-                selectPiece={() => selectPiece(s)} />
+                selectPiece={() => selectPiece(s, i)} />
       })}
       </div>
     </div>
@@ -111,6 +149,8 @@ function mapStateToProps(state: StateProps) {
 
 const mapDispatchToProps = {
   loadPieces,
+  updatePieces,
+  updateTurn,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);
