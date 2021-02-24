@@ -2,19 +2,23 @@ import React from 'react';
 import { connect } from "react-redux"
 import { loadPieces } from './redux/action-pieces'
 import styles from './App.module.css';
-import Square from './Square'
+import BoardSquare from './Square'
 
-interface pieces {
-  0: Object,
-  1: Object,
-}
+import { getPieceType } from './utils'
+import {
+  knight,
+  pawn,
+} from './moves'
 
-interface stateProps {
-  pieces: pieces,
-  turn: 0 | 1,
-  squares: string[],
-  loggedMoves: object[],
-}
+import {
+  StateProps,
+  Pieces,
+  PieceMeta,
+  Squares,
+  Square,
+  Turn,
+  PossibleMoves,
+} from './types'
 
 function App(props: any) {
   const {
@@ -34,7 +38,7 @@ function App(props: any) {
         color = !color
         if(i % 8 === 0) color = !color
 
-        return <Square
+        return <BoardSquare
                 key={i}
                 number={i}
                 color={color}
@@ -45,19 +49,16 @@ function App(props: any) {
   );
 }
 
-function mapStateToProps(state: stateProps) {
+function mapStateToProps(state: StateProps) {
   const {
     pieces,
   } = state
 
   let squares = (new Array(64)).fill('')
-  
+
   if(piecesLoaded(pieces)) {
-    Object.entries(pieces).forEach(([player, playerPieces]) => {
-      Object.entries((playerPieces as Object)).forEach(([piece, { square }]) =>
-        squares[square] = `${player}${piece}`
-      )
-    })
+    addPiecesToBoard(pieces, squares)
+    addPossibleMovesToPieces(pieces, squares)
   }
 
   return {
@@ -73,6 +74,37 @@ const mapDispatchToProps = {
 export default connect(mapStateToProps, mapDispatchToProps)(App);
 
 
-function piecesLoaded(pieces: pieces) {
+function piecesLoaded(pieces: Pieces) {
   return Object.keys(pieces[0]).length
+}
+
+function addPiecesToBoard(pieces: Pieces, squares: Squares) {
+  Object.entries(pieces).forEach(([player, playerPieces]) => {
+    Object.entries((playerPieces as Object)).forEach(([piece, { square }]) => {
+      if(square > -1) squares[square] = `${player}${piece}`
+    })
+  })
+}
+
+function addPossibleMovesToPieces(pieces: Pieces, squares: Squares) {
+  Object.entries(pieces).forEach(([player, playerPieces]) =>
+    Object.entries(playerPieces).forEach(([piece, pieceMeta]) => {
+      const { square } = (pieceMeta as PieceMeta)
+
+      if(square === -1) return
+
+      let movesFunc = (square: Square, squares: Squares): number[] => []
+
+      switch(getPieceType(squares[square])){
+        case 'n':
+          movesFunc = knight
+          break
+        case 'p':
+          movesFunc = pawn
+          break
+      }
+
+      (pieceMeta as PieceMeta).possibleMoves = movesFunc(square, squares)
+    })
+  )
 }

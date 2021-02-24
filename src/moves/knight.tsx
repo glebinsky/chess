@@ -1,10 +1,16 @@
-const {
+import {
   getPlayer,
   getCoordinatesFromSquare,
   getSquareFromCoordinates
-} = require('../utils')
+} from '../utils'
 
-module.exports = function knight(square, squares) {
+import {
+  Square,
+  Squares,
+  PossibleMoves,
+} from '../types'
+
+export default function knight(square: Square, squares: Squares): PossibleMoves {
   // console.log('knight')
   const { x, y } = getCoordinatesFromSquare(square)
 
@@ -19,7 +25,7 @@ module.exports = function knight(square, squares) {
     { x: -1, y: -2 },
   ]
 
-  return steps.reduce((acc, cur) => {
+  return steps.reduce((acc: number[], cur) => {
     // console.log(cur)
     const newX = cur.x + x
     const newY = cur.y + y
@@ -27,7 +33,8 @@ module.exports = function knight(square, squares) {
     if(newX > -1 && newX < 8 && newY > -1 && newY < 8) {
       const newSquare = getSquareFromCoordinates({ x: newX, y: newY })
       // console.log(newSquare, squares[newSquare], squares[newSquare].player === undefined || squares[newSquare].player !== squares[square].player)
-      if(squares[newSquare] === '' || getPlayer(squares[newSquare]) !== getPlayer(squares[square])) acc = acc.concat([newSquare])
+      if(squares[newSquare] === '' || getPlayer(squares[newSquare]) !== getPlayer(squares[square]))
+        acc = acc.concat([newSquare])
     }
     // console.log(acc)
 

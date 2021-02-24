@@ -1,10 +1,16 @@
-const {
+import {
   getPlayer,
   getCoordinatesFromSquare,
   getSquareFromCoordinates
-} = require('../utils')
+} from '../utils'
 
-module.exports = function pawn(square, squares) {
+import {
+  Square,
+  Squares,
+  PossibleMoves,
+} from '../types'
+
+export default function pawn(square: Square, squares: Squares): PossibleMoves {
   // console.log('pawn')
   const squarePiece = squares[square]
 
@@ -24,7 +30,7 @@ module.exports = function pawn(square, squares) {
     })
     if(squares[newSquare] !== '' && getPlayer(squares[newSquare]) !== player)
       moves.push(newSquare)
-    
+
     //TODO: en passant
   }
 
@@ -36,7 +42,7 @@ module.exports = function pawn(square, squares) {
     })
     if(squares[newSquare] !== '' && getPlayer(squares[newSquare]) !== player)
       moves.push(newSquare)
-    
+
     //TODO: en passant
   }
 
