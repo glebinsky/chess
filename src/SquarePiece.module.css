@@ -1,0 +1,80 @@
+.SquarePiece {
+  width: 48px;
+  height: 48px;
+  line-height: 48px;
+  text-align: center;
+  border: 1px solid;
+  overflow: hidden;
+}
+
+.white {
+  background: white;
+  border-color: white;
+}
+
+.black {
+  background: #343944;
+  border-color: #343944;
+}
+
+.hover:hover {
+  cursor: pointer;
+  background: sandybrown;
+}
+
+.selected {
+  background: cadetblue;
+}
+
+.selected.black {
+  border-color: transparent;
+}
+
+
+.whiteking {
+  transform: translate(0, 0);
+}
+
+.whitequeen {
+  transform: translate(-45px, 0);
+}
+
+.whitebishop {
+  transform: translate(-90px, 0);
+}
+
+.whiteknight {
+  transform: translate(-135px, 0);
+}
+
+.whiterook {
+  transform: translate(-180px, 0);
+}
+
+.whitepawn {
+  transform: translate(-225px, 0);
+}
+
+.blackking {
+  transform: translate(0, -45px);
+}
+
+.blackqueen {
+  transform: translate(-45px, -45px);
+}
+
+.blackbishop {
+  transform: translate(-90px, -45px);
+}
+
+.blackknight {
+  transform: translate(-135px, -45px);
+}
+
+.blackrook {
+  transform: translate(-180px, -45px);
+}
+
+.blackpawn {
+  transform: translate(-225px, -45px);
+}

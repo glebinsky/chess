@@ -6,7 +6,7 @@ import {
 } from './redux/action-pieces'
 import { updateTurn } from './redux/action-turn'
 import styles from './App.module.css';
-import BoardSquare from './BoardSquare'
+import SquarePiece from './SquarePiece'
 
 import {
   getPieceType,
@@ -59,7 +59,11 @@ function App(props: AppProps) {
   if(!piecesLoaded(pieces)) loadPieces()
 
   function selectPiece(squarePiece: string, squareIndex: number) {
-    if(squarePiece === selectedPiece || (squarePiece !== '' && !isPieceTurn(pieces, squarePiece, turn))) {
+    if(squarePiece === '' && !selectedPiece) return
+
+    if(squarePiece === selectedPiece ||
+      (squarePiece !== '' && !selectedPiece &&
+        !isPieceTurn(pieces, squarePiece, turn))) {
       setSelectedPiece()
       return
     }
@@ -81,6 +85,9 @@ function App(props: AppProps) {
         setSelectedPiece()
         return
       }
+
+      setSelectedPiece()
+      return
     }
 
     setSelectedPiece(squarePiece)
@@ -114,7 +121,7 @@ function App(props: AppProps) {
         const hover = isPieceTurn(pieces, s, turn)
         const selected = isSquareSelected(s, i)
 
-        return <BoardSquare
+        return <SquarePiece
                 key={i}
                 color={color}
                 piece={s}
